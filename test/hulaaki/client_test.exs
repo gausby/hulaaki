@@ -77,7 +77,7 @@ defmodule Hulaaki.ClientTest do
 
   defp pre_connect(pid) do
     options = [client_id: "some-name", host: "localhost", port: 1883]
-    pid |> SampleClient.connect options
+    pid |> SampleClient.connect(options)
   end
 
   defp post_disconnect(pid) do
@@ -115,7 +115,7 @@ defmodule Hulaaki.ClientTest do
 
     options = [id: 9_347, topic: "nope", message: "a message",
                dup: 0, qos: 1, retain: 1]
-    pid |> SampleClient.publish options
+    pid |> SampleClient.publish(options)
     assert_receive {:publish, %Message.Publish{}}
 
     post_disconnect pid
@@ -126,7 +126,7 @@ defmodule Hulaaki.ClientTest do
 
     options = [topic: "nope", message: "a message",
                dup: 0, qos: 0, retain: 1]
-    pid |> SampleClient.publish options
+    pid |> SampleClient.publish(options)
     assert_receive {:publish, %Message.Publish{}}
 
     post_disconnect pid
@@ -137,7 +137,7 @@ defmodule Hulaaki.ClientTest do
 
     options = [id: 9_347, topic: "nope", message: "a message",
                dup: 0, qos: 1, retain: 1]
-    pid |> SampleClient.publish options
+    pid |> SampleClient.publish(options)
     assert_receive {:publish_ack, %Message.PubAck{}}
 
     post_disconnect pid
@@ -148,7 +148,7 @@ defmodule Hulaaki.ClientTest do
 
     options = [id: 9_347, topic: "nope", message: "a message",
                dup: 0, qos: 2, retain: 1]
-    pid |> SampleClient.publish options
+    pid |> SampleClient.publish(options)
     assert_receive {:publish_receive, %Message.PubRec{}}
 
     post_disconnect pid
@@ -159,7 +159,7 @@ defmodule Hulaaki.ClientTest do
 
     options = [id: 9_347, topic: "nope", message: "a message",
                dup: 0, qos: 2, retain: 1]
-    pid |> SampleClient.publish options
+    pid |> SampleClient.publish(options)
     assert_receive {:publish_release, %Message.PubRel{}}
 
     post_disconnect pid
@@ -170,7 +170,7 @@ defmodule Hulaaki.ClientTest do
 
     options = [id: 9_347, topic: "nope", message: "a message",
                dup: 0, qos: 2, retain: 1]
-    pid |> SampleClient.publish options
+    pid |> SampleClient.publish(options)
     assert_receive {:publish_complete, %Message.PubComp{}}
 
     post_disconnect pid
@@ -180,7 +180,7 @@ defmodule Hulaaki.ClientTest do
     pre_connect pid
 
     options = [id: 24_756, topics: ["a/b", "c/d"], qoses: [0, 1]]
-    pid |> SampleClient.subscribe options
+    pid |> SampleClient.subscribe(options)
     assert_receive {:subscribe, %Message.Subscribe{}}
 
     post_disconnect pid
@@ -190,7 +190,7 @@ defmodule Hulaaki.ClientTest do
     pre_connect pid
 
     options = [id: 24_756, topics: ["a/b", "c/d"], qoses: [0, 1]]
-    pid |> SampleClient.subscribe options
+    pid |> SampleClient.subscribe(options)
     assert_receive {:subscribe_ack, %Message.SubAck{}}
 
     post_disconnect pid
@@ -200,7 +200,7 @@ defmodule Hulaaki.ClientTest do
     pre_connect pid
 
     options = [id: 12_385, topics: ["a/d", "c/f"]]
-    pid |> SampleClient.unsubscribe options
+    pid |> SampleClient.unsubscribe(options)
     assert_receive {:unsubscribe, %Message.Unsubscribe{}}
 
     post_disconnect pid
@@ -210,7 +210,7 @@ defmodule Hulaaki.ClientTest do
     pre_connect pid
 
     options = [id: 12_385, topics: ["a/d", "c/f"]]
-    pid |> SampleClient.unsubscribe options
+    pid |> SampleClient.unsubscribe(options)
     assert_receive {:unsubscribe_ack, %Message.UnsubAck{}}
 
     post_disconnect pid
@@ -238,17 +238,17 @@ defmodule Hulaaki.ClientTest do
     pre_connect pid
 
     options = [id: 24_756, topics: ["awesome"], qoses: [0]]
-    pid |> SampleClient.subscribe options
+    pid |> SampleClient.subscribe(options)
 
     spawn fn ->
       {:ok, pid2} = SampleClient.start_link(%{parent: self})
 
       options = [client_id: "another-name", host: 'localhost', port: 1883]
-      pid2 |> SampleClient.connect options
+      pid2 |> SampleClient.connect(options)
 
       options = [id: 11_175, topic: "awesome", message: "a message",
                  dup: 0, qos: 0, retain: 1]
-      pid2 |> SampleClient.publish options
+      pid2 |> SampleClient.publish(options)
 
       post_disconnect pid2
     end
@@ -262,17 +262,17 @@ defmodule Hulaaki.ClientTest do
     pre_connect pid
 
     options = [id: 24_756, topics: ["awesome"], qoses: [1]]
-    pid |> SampleClient.subscribe options
+    pid |> SampleClient.subscribe(options)
 
     spawn fn ->
       {:ok, pid2} = SampleClient.start_link(%{parent: self})
 
       options = [client_id: "another-name", host: 'localhost', port: 1883]
-      pid2 |> SampleClient.connect options
+      pid2 |> SampleClient.connect(options)
 
       options = [id: 11_175, topic: "awesome", message: "a message",
                  dup: 0, qos: 1, retain: 1]
-      pid2 |> SampleClient.publish options
+      pid2 |> SampleClient.publish(options)
 
       post_disconnect pid2
     end
